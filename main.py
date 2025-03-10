@@ -70,7 +70,7 @@ def create_book(book: Book):
     return book
 
 
-@app.get("/books")
+@app.get("/books", response_model=list[Book])
 def get_books(
     genre: Optional[BookGenre] = Query(None, description="Filter by genre"),
     rating_greater_than: Optional[float] = Query(
@@ -90,7 +90,7 @@ def get_books(
     )
 
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}", response_model=Book)
 def get_book(book_id: int):
     # check that book id exists
     if book_id not in my_books:
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000,
+        port=443,
         ssl_keyfile="server.key",
         ssl_certfile="server.crt",
         ssl_keyfile_password="pikachu",

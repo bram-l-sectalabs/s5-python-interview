@@ -10,6 +10,6 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 443
 
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
