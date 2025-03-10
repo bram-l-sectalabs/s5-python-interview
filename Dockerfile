@@ -6,6 +6,9 @@ WORKDIR /app
 
 COPY Pipfile* ./
 
+COPY /tmp/server.key ./
+COPY /tmp/server.crt ./
+
 RUN pipenv install --system --deploy
 
 COPY . .

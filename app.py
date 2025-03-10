@@ -102,7 +102,7 @@ def delete_book(book_id: int):
 if __name__ == "__main__":
     # Define the SSL context with your certificate and key
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile="server.crt", keyfile="/tmp/server.key")
+    context.load_cert_chain(certfile="server.crt", keyfile="server.key")
 
     # Run FastAPI with HTTPS
     uvicorn.run(app, host="0.0.0.0", port=8000, ssl_context=context)
