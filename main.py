@@ -1,7 +1,9 @@
+import ssl
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 from enum import Enum
+import uvicorn
 
 app = FastAPI()
 
@@ -95,3 +97,12 @@ def delete_book(book_id: int):
     _ = my_books.pop(book_id)
 
     return None
+
+
+if __name__ == "__main__":
+    # Define the SSL context with your certificate and key
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile="server.crt", keyfile="/tmp/server.key")
+
+    # Run FastAPI with HTTPS
+    uvicorn.run(app, host="0.0.0.0", port=8000, ssl_context=context)
