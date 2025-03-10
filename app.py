@@ -1,11 +1,20 @@
-import ssl
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 from enum import Enum
+from fastapi.middleware.cors import CORSMiddleware
+
 import uvicorn
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class BookGenre(str, Enum):
@@ -68,15 +77,17 @@ def get_books(
         None, description="Filter by minimum rating"
     ),
 ):
-    return {
-        k: v
-        for k, v in my_books.items()
-        if (genre is None or v.genre == genre)
-        and (
-            rating_greater_than is None
-            or (v.rating is not None and v.rating > rating_greater_than)
-        )
-    }
+    return list(
+        {
+            k: v
+            for k, v in my_books.items()
+            if (genre is None or v.genre == genre)
+            and (
+                rating_greater_than is None
+                or (v.rating is not None and v.rating > rating_greater_than)
+            )
+        }.values()
+    )
 
 
 @app.get("/books/{book_id}")
@@ -100,9 +111,11 @@ def delete_book(book_id: int):
 
 
 if __name__ == "__main__":
-    # Define the SSL context with your certificate and key
-    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile="server.crt", keyfile="server.key")
-
-    # Run FastAPI with HTTPS
-    uvicorn.run(app, host="0.0.0.0", port=8000, ssl_context=context)
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        ssl_keyfile="server.key",
+        ssl_certfile="server.crt",
+        ssl_keyfile_password="pikachu",
+    )
