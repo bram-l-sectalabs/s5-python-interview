@@ -24,7 +24,7 @@ class BookGenre(str, Enum):
 
 
 class Book(BaseModel):
-    id: int
+    id: str
     # pydantic model with validation not necessary but useful
     title: str = Field(..., min_length=1, description="Title cannot be empty")
     author: str = Field(..., min_length=1, description="Author cannot be empty")
@@ -34,9 +34,9 @@ class Book(BaseModel):
     )
 
 
-my_books: dict[int, Book] = {
-    100: Book(
-        id=100,
+my_books: dict[str, Book] = {
+    "100": Book(
+        id="100",
         title="The Alchemist",
         author="Paulo Coelho",
         rating=9.5,
@@ -91,7 +91,7 @@ def get_books(
 
 
 @app.get("/books/{book_id}", response_model=Book)
-def get_book(book_id: int):
+def get_book(book_id: str):
     # check that book id exists
     if book_id not in my_books:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -100,7 +100,7 @@ def get_book(book_id: int):
 
 
 @app.delete("/books/{book_id}", status_code=204)
-def delete_book(book_id: int):
+def delete_book(book_id: str):
     # check that book id exists
     if book_id not in my_books:
         raise HTTPException(status_code=404, detail="Book not found")
